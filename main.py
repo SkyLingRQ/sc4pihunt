@@ -2,15 +2,15 @@ import argparse
 import asyncio
 import os
 
-parse = argparse.ArgumentParser(description="")
-parse.add_argument("--status", help="")
-parse.add_argument("--cors", help="")
-parse.add_argument("--openredirect", help="")
+parse = argparse.ArgumentParser(description="Sc4pihunt is a tool build in python for recon web.")
+parse.add_argument("-sP", "--status", help="")
+parse.add_argument("-cx", "--cors", help="")
+parse.add_argument("-op", "--openredirect", help="")
 parse.add_argument("--xss", help="")
-parse.add_argument("-api-endpoints", help="")
-parse.add_argument("--subdomains", help="")
-parse.add_argument("-wayback-url", help="")
-parse.add_argument("-wayback-urls", action="store_true", help="")
+parse.add_argument("-api", "-api-endpoints", help="")
+parse.add_argument("-S", "--subdomains", help="")
+parse.add_argument("-wu", "-wayback-url", help="")
+parse.add_argument("-WU", "-wayback-urls", action="store_true", help="")
 parse.add_argument("-ej", "--extrack-js", help="")
 parse.add_argument("-jS", "--jsensitive", help="")
 
