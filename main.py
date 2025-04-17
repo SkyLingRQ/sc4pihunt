@@ -3,16 +3,17 @@ import asyncio
 import os
 
 parse = argparse.ArgumentParser(description="Sc4pihunt is a tool build in python for recon web.")
-parse.add_argument("-sP", "--status", help="")
-parse.add_argument("-cx", "--cors", help="")
-parse.add_argument("-op", "--openredirect", help="")
-parse.add_argument("--xss", help="")
-parse.add_argument("-api", "-api-endpoints", help="")
-parse.add_argument("-S", "--subdomains", help="")
-parse.add_argument("-wu", "-wayback-url", help="")
-parse.add_argument("-WU", "-wayback-urls", action="store_true", help="")
-parse.add_argument("-ej", "--extrack-js", help="")
-parse.add_argument("-jS", "--jsensitive", help="")
+parse.add_argument("-sP", "--status", help="Realiza un escaneo de estado HTTP (status code) para una lista de URLs.")
+parse.add_argument("-cx", "--cors", help="Detecta posibles vulnerabilidades de CORS en las URLs proporcionadas.")
+parse.add_argument("-op", "--openredirect", help="Escanea las URLs en busca de vulnerabilidades de redirección abierta.")
+parse.add_argument("--xss", help="Prueba vulnerabilidades de Cross-Site Scripting (XSS) en las URLs.")
+#parse.add_argument("-api", "-api-endpoints", help="Busca endpoints de API en las URLs objetivo.")
+parse.add_argument("-S", "--subdomains", help="Enumera subdominios de un dominio dado.")
+parse.add_argument("-wu", "-wayback-url", help="Recupera URLs archivadas para un dominio usando Wayback Machine.")
+parse.add_argument("-WU", "-wayback-urls", action="store_true", help="Recupera y lista múltiples URLs archivadas de Wayback Machine.")
+parse.add_argument("-ej", "--extrack-js", help="Extrae archivos JavaScript desde la URL proporcionada.")
+parse.add_argument("-jS", "--jsensitive", help="Escanea archivos JavaScript en busca de datos sensibles (tokens, claves, etc).")
+
 
 args = parse.parse_args()
 
