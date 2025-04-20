@@ -1,6 +1,15 @@
 import aiohttp
 import asyncio
 from urllib.parse import urlparse
+from colorama import Fore, init
+
+init()
+
+rd = Fore.RED
+y = Fore.YELLOW
+g = Fore.GREEN
+rs = Fore.LIGHTMAGENTA_EX
+reset = Fore.RESET
 
 paths = [
     "api/ads",
@@ -278,14 +287,33 @@ paths = [
 ]
 
 async def fuzzing_api(url, session):
-        async with session.get(url) as r:
-            print(f"[{r.status}] {url}")
+        try:
+            async with session.get(url) as r:
+                if r.status == 200:
+                    print(f"[{g}{r.status}{reset}] {url}")
+                elif r.status == 404:
+                    print(f"[{rd}{r.status}{reset}] {url}")
+                elif r.status == 403:
+                    print(f"[{y}{r.status}{reset}] {url}")
+                else:
+                    print(f"[{rs}{r.status}{reset}] {url}")
 
-async def main(url):
+        except Exception as e:
+            print(f"Error en {url}: {e}")
+
+
+async def main(file):
+    task = []
+    with open(file, 'r') as rf:
+         urls = rf.readlines()
     async with aiohttp.ClientSession() as session:
-        urlP = urlparse(url).netloc
-        esquema = urlP.
-        for api in paths:
-            new_url = esquema+urlP+"/"+api
-            await fuzzing_api(new_url, session)
-asyncio.run(main("https://chatgpt.com/c/67ffe127-2608-8012-92ef-0d52971a0280"))
+        for url in urls:
+            urlP = urlparse(url)
+            netloc = urlP.netloc
+            esquema = urlP.scheme
+            for api in paths:
+                new_url = f"{esquema}://{netloc}/{api}"
+                task.append(fuzzing_api(new_url, session))
+        
+        if task:
+            await asyncio.gather(*task)
