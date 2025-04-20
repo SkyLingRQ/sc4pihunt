@@ -24,7 +24,7 @@ interesting_patterns = {
     
     'EMAILS': r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+',
         
-    'SENSITIVE_FUNCTIONS': r'(?i)(eval|setTimeout|setInterval|Function|exec|spawn|child_process|system|os\.system|subprocess)\s*\([^)]+\)',
+    'SENSITIVE_FUNCTIONS': r'(?i)(eval|setTimeout|setInterval|exec|spawn|child_process|system|os\.system|subprocess)\s*\([^)]+\)',
     
     'HARDCODED_AUTH': r'(?i)(user(name)?|admin|login)["\'\s:=]+["\']?.{3,}["\']?.*(pass(word)?|pwd)["\'\s:=]+["\']?.{3,}["\']?',
 }
