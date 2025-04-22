@@ -2,6 +2,8 @@ import aiohttp
 import asyncio
 import urllib.parse
 from colorama import init, Fore
+from scripts.useragent.user_agent import _useragent_list
+import random
 
 init()
 
@@ -21,6 +23,7 @@ found_urls = []
 sem = asyncio.Semaphore(50)
 
 async def fetch(session, url, payload):
+    random_agent = random.choice(_useragent_list)
     url = url.strip()
     url_parsed = urllib.parse.urlparse(url)
     qs = urllib.parse.parse_qsl(url_parsed.query)
@@ -32,7 +35,7 @@ async def fetch(session, url, payload):
     new_query = urllib.parse.urlencode(injected_qs)
     full_url = urllib.parse.urlunparse(url_parsed._replace(query=new_query))
 
-    headers = {'User-Agent': "Mozilla/5.0"}
+    headers = {"User-Agent": random_agent}
 
     async with sem:
         try:
@@ -51,8 +54,9 @@ async def main(file):
     async with aiohttp.ClientSession() as session:
         tasks = []
         for url in urls:
-            for payload in payloads:
-                tasks.append(fetch(session, url, payload))
+            if "=" in url:
+                for payload in payloads:
+                    tasks.append(fetch(session, url, payload))
         await asyncio.gather(*tasks)
 
     print(f"{g}\nScan complete. XSS Found: {len(found_urls)}{reset}")

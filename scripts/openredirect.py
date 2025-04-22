@@ -26,11 +26,12 @@ async def main(file):
         urls = rf.readlines()
     async with aiohttp.ClientSession() as session:
         for url in urls:
-            urlp = urlparse(url)
-            query = parse_qs(urlp.query)
-            for key in query:
-                query[key] = [urlPayload]
-                new_query = urlencode(query, doseq=True)
-                new_url = urlunparse(urlp._replace(query=new_query))
-                task.append(redirectx(new_url, session))
+            if "=" in url:
+                urlp = urlparse(url)
+                query = parse_qs(urlp.query)
+                for key in query:
+                    query[key] = [urlPayload]
+                    new_query = urlencode(query, doseq=True)
+                    new_url = urlunparse(urlp._replace(query=new_query))
+                    task.append(redirectx(new_url, session))
         await asyncio.gather(*task)
