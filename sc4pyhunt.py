@@ -53,11 +53,10 @@ if args.wayback_urls:
     output_file = "resultados.txt"
     with open(archive_path, 'r') as f:
         urls = f.readlines()
-    with open(output_file, 'w') as out:
+    with open(output_file, 'w') as _:
         for url in urls:
             url = url.strip()
             os.system(f"waybackurls {url} >> {output_file}")
-            os.system(f"cat {output_file} | uniq > {output_file}")
 if args.extrack_js:
     os.system(f"katana -u {args.extrack_js} -silent -em js -o jsfiles.txt")
 if args.jsensitive:
