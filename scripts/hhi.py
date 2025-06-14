@@ -35,7 +35,6 @@ listHeaders = [
         "X-Host",
         "X-Forwarded-Server",
         "X-Http-Host-Override",
-        "Forwarded",
         "X-Rewrite-Url",
         "X-Original-Url"
 ]
@@ -54,8 +53,9 @@ async def scan_hhi(url, session):
                 async with session.get(url, headers=headers, timeout=10) as response:
                     headersResponse = response.headers
                     htmlResponse = await response.text()
-                    if "evil.com" in htmlResponse or "evil.com" in str(headersResponse):
-                        banner2 = f"""{c}
+                    if response.status in [200, 301, 302, 307, 308]:
+                        if "evil.com" in htmlResponse or "evil.com" in str(headersResponse):
+                            banner2 = f"""{c}
     {g}╔════════════════════════════════════╗
     ║  {r}Host Header Injection Detected{g}    ║
     ╚════════════════════════════════════╝
@@ -66,12 +66,13 @@ async def scan_hhi(url, session):
     │──[{g}Response Details]{c}───────────────────────────┐
     {response.status}
                         """
-                        print(banner2)
+                            print(banner2)
+                        else:
+                            pass
                     else:
                         pass
         except Exception:
             pass
-
 async def main():
     async with aiohttp.ClientSession() as session:
         print(banner)

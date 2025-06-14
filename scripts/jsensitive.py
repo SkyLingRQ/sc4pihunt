@@ -35,7 +35,7 @@ interesting_patterns = {
 async def recon_sensitive_info(jsurl, session):
     header = {"User-Agent":random.choice(_useragent_list)}
     try:
-        async with session.get(jsurl, header=header) as response:
+        async with session.get(jsurl, headers=header) as response:
             r = await response.text()
             sensitive = {}
             for param, values in interesting_patterns.items():

@@ -12,9 +12,10 @@ reset = Fore.RESET
 urlPayload = "https://www.google.com"
 
 async def redirectx(url, session):
-    header = {"User-Agent":random.choice(_useragent_list)}
+    random_useragent = random.choice(_useragent_list)
+    header = {"User-Agent":random_useragent}
     try:
-        async with session.get(url, allow_redirects=True, header=header) as response2:
+        async with session.get(url, headers=header, allow_redirects=True) as response2:
             response2 = str(response2.url)
             if response2.startswith(urlPayload):
                 print(f"{green}[ VULNERABLLE ] {url}{reset}")
