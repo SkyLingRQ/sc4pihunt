@@ -1,14 +1,6 @@
 import aiohttp
 import asyncio
-from urllib.parse import urlencode, urlparse, urlunparse, parse_qs
-from colorama import Fore, init
-import os
-import re
-
-init()
-
-v = Fore.GREEN
-reset = Fore.RESET
+from urllib.parse import parse_qs,urlencode,urlunparse,urlparse
 
 keywords = [
     "root", "daemon", "bin", "sys", "sync", "games", "man", "lp", "mail", "news", "uucp",
@@ -18,43 +10,32 @@ keywords = [
     "/var/lib/gnats", "/nonexistent", "/run/uuidd"
 ]
 
-escaped = [re.escape(k) for k in keywords]
-combined_pattern = r"(" + "|".join(escaped) + r")"
-pattern = re.compile(combined_pattern, flags=re.IGNORECASE)
 
-sem = asyncio.Semaphore(20)
+async def scan_pt(url, session):
+    async with session.get(url) as response:
+        r = await response.text()
+        for keyword in keywords:
+            if keyword in r:
+                print(f"[+] LFI FOUND IN {url}")
+            else:
+                pass
 
-async def dpScan(url, session):
-    async with sem:
-        try:
-            async with session.get(url) as r:
-                r = await r.text()
-                match = pattern.findall(r)
-                if match:
-                    print(f"{v}[+] PATH TRAVERSAL DETECTED ==> {url}{reset}")
-                else:
-                   pass
-        except Exception:
-            pass
+async def main(file, pathtraversalWordlist):
+    with open(file, 'r') as fr:
+        urls = fr.readlines()
+    with open(pathtraversalWordlist, 'r') as rf1:
+        payloads_path = rf1.readlines()
 
-async def main(file):
     async with aiohttp.ClientSession() as session:
         task = []
-        path = os.path.join(os.path.dirname(__file__), "../payloads/pathtraversal_payloads.txt")
-        with open(os.path.abspath(path), 'r') as rp:
-            payloads = rp.readlines()
-
-        with open(file, 'r') as rf:
-            urls = rf.readlines()
-        for payload in payloads:
+        for payload in payloads_path:
             for url in urls:
-                url = url.strip()
-                urlparsed = urlparse(url)
-                qs = parse_qs(urlparsed.query)
+                url_parse = urlparse(url.strip())
+                qs = parse_qs(url_parse.query)
+                
                 for key in qs:
-                    qs[key] = [payload]
-                    encoded_query = urlencode(qs, doseq=True)
-                    new_url = urlunparse(urlparsed._replace(query=encoded_query))
-                    task.append(dpScan(new_url, session))
-        
+                    qs[key] = [payload.strip()]
+                    new_query = urlencode(qs, doseq=True)
+                    new_url = urlunparse(url_parse._replace(query=new_query))
+                    task.append(scan_pt(new_url, session))
         await asyncio.gather(*task)

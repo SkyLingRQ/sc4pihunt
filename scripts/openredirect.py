@@ -1,6 +1,8 @@
 from urllib.parse import urlencode, urlparse, parse_qs, urlunparse
 import asyncio
 import aiohttp
+import random
+from scripts.useragent.user_agent import _useragent_list
 from colorama import init, Fore
 
 init()
@@ -10,8 +12,9 @@ reset = Fore.RESET
 urlPayload = "https://www.google.com"
 
 async def redirectx(url, session):
+    header = {"User-Agent":random.choice(_useragent_list)}
     try:
-        async with session.get(url, allow_redirects=True) as response2:
+        async with session.get(url, allow_redirects=True, header=header) as response2:
             response2 = str(response2.url)
             if response2.startswith(urlPayload):
                 print(f"{green}[ VULNERABLLE ] {url}{reset}")

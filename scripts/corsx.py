@@ -1,6 +1,8 @@
 import asyncio
 import aiohttp
+import random
 from colorama import Fore, init
+from scripts.useragent.user_agent import _useragent_list
 
 init()
 
@@ -13,7 +15,8 @@ corsFound = []
 async def scan_cors(url, session):
     urlMal = "http://evil.com"
     headers = {
-        "Origin":urlMal
+        "Origin":urlMal,
+        "User-Agent":random.choice(_useragent_list)
     }
     url = url.strip()
     try:

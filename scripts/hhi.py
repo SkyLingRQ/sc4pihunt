@@ -1,5 +1,7 @@
 import asyncio
 import aiohttp
+import random
+from scripts.useragent.user_agent import _useragent_list
 from colorama import init, Fore
 
 init(autoreset=True)
@@ -38,33 +40,37 @@ listHeaders = [
         "X-Original-Url"
 ]
 
+sem = asyncio.Semaphore(50)
+
 async def scan_hhi(url, session):
     for header in listHeaders:
         headers = {
-                    header:"evil.com"
+                    header:"evil.com",
+                    "User-Agent":random.choice(_useragent_list)
             }
         
         try:
-            async with session.get(url, headers=headers, timeout=10) as response:
-                headersResponse = response.headers
-                htmlResponse = await response.text()
-                if "evil.com" in htmlResponse or "evil.com" in str(headersResponse):
-                    banner2 = f"""{c}
-{g}╔════════════════════════════════════╗
-║  {r}Host Header Injection Detected{g}    ║
-╚════════════════════════════════════╝
-┌──[{g}Target URL{c}─────────────────────────────────┐
-{url}
-│──[{g}Header Vulnerable]{c}──────────────────────────┐
-{header}
-│──[{g}Response Details]{c}───────────────────────────┐
-{response.status}
-                    """
-                    print(banner2)
-                else:
-                    pass
+            async with sem:
+                async with session.get(url, headers=headers, timeout=10) as response:
+                    headersResponse = response.headers
+                    htmlResponse = await response.text()
+                    if "evil.com" in htmlResponse or "evil.com" in str(headersResponse):
+                        banner2 = f"""{c}
+    {g}╔════════════════════════════════════╗
+    ║  {r}Host Header Injection Detected{g}    ║
+    ╚════════════════════════════════════╝
+    ┌──[{g}Target URL{c}─────────────────────────────────┐
+    {url}
+    │──[{g}Header Vulnerable]{c}──────────────────────────┐
+    {header}
+    │──[{g}Response Details]{c}───────────────────────────┐
+    {response.status}
+                        """
+                        print(banner2)
+                    else:
+                        pass
         except Exception:
-            print(f"{r}[x] Error in the request")
+            pass
 
 async def main():
     async with aiohttp.ClientSession() as session:
