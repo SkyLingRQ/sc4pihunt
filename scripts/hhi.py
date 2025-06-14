@@ -3,6 +3,7 @@ import aiohttp
 import random
 from scripts.useragent.user_agent import _useragent_list
 from colorama import init, Fore
+from tqdm.asyncio import tqdm_asyncio as tqdm
 
 init(autoreset=True)
 
@@ -39,7 +40,7 @@ listHeaders = [
         "X-Original-Url"
 ]
 
-sem = asyncio.Semaphore(50)
+sem = asyncio.Semaphore(100)
 
 async def scan_hhi(url, session):
     for header in listHeaders:

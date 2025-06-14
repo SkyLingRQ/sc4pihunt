@@ -15,7 +15,7 @@ reset = Fore.RESET
 parse = argparse.ArgumentParser(description="Sc4pihunt is a tool build in python for recon web.")
 parse.add_argument("-sP", "--status", help="Realiza un escaneo de estado HTTP (status code) para una lista de URLs.")
 parse.add_argument("-cx", "--cors", help="Detecta posibles vulnerabilidades de CORS en las URLs proporcionadas.")
-parse.add_argument("-op", "--openredirect", help="Escanea las URLs en busca de vulnerabilidades de redirección abierta.")
+parse.add_argument("-op", "--redirect", help="Escanea las URLs en busca de vulnerabilidades de redirección abierta.")
 parse.add_argument("--xss", help="Prueba vulnerabilidades de Cross-Site Scripting (XSS) en las URLs.")
 parse.add_argument("-api", "-api-endpoints", help="Busca endpoints de API en las URLs objetivo.")
 parse.add_argument("-S", "--subdomains", help="Enumera subdominios de un dominio dado.")
@@ -29,6 +29,7 @@ parse.add_argument('-qR', '--qsreplace', help="Remplaza valores de querys de una
 parse.add_argument("-ip", help="Extraer ip de un dominio")
 parse.add_argument("--clickjacking", help="Genera un HTML que verifica si la web es vulnerable a clickjacking mediante un iframe", action="store_true")
 parse.add_argument("--hhi", help="Escanear una URL o lista de URLs en busca de una inyección de el header Host.", action="store_true")
+parse.add_argument("--admin-panel", help="Hace un alasisis mediante endpoints para el reconocimiento de rutas de admin panel en una lista de webs o una única URL", action="store_true")
 
 args = parse.parse_args()
 
@@ -39,9 +40,9 @@ if args.status:
 if args.cors:
     from scripts.corsx import main as corsx
     asyncio.run(corsx(args.cors))
-if args.openredirect:
+if args.redirect:
     from scripts.openredirect import main as redirectx
-    asyncio.run(redirectx(args.openredirect))
+    asyncio.run(redirectx(args.redirect))
 if args.xss:
     from scripts.vacpxss import main as vacpxss
     asyncio.run(vacpxss(args.xss))
@@ -105,3 +106,6 @@ if args.clickjacking:
 if args.hhi:
     from scripts.hhi import main as hhi_scan
     asyncio.run(hhi_scan())
+if args.admin_panel:
+    from scripts.adminFinder import main as adminFinder
+    asyncio.run(adminFinder())
