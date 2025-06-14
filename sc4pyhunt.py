@@ -23,11 +23,12 @@ parse.add_argument("-wu", "--wayback-url", help="Recupera URLs archivadas para u
 parse.add_argument("-WU", "--wayback-urls", action="store_true", help="Recupera y lista múltiples URLs archivadas de Wayback Machine.")
 parse.add_argument("-ej", "--extrack-js", help="Extrae archivos JavaScript desde la URL proporcionada.")
 parse.add_argument("-jS", "--jsensitive", help="Escanea archivos JavaScript en busca de datos sensibles (tokens, claves, etc).")
-#parse.add_argument("-pT", "--pathTraversal", help="Detecta posibles fallos de path traversal en parametros mediante una lista de payloads.")
+parse.add_argument("-pT", "--pathTraversal", help="Detecta posibles fallos de path traversal en parametros mediante una lista de payloads proporcionada por el usuario.")
 parse.add_argument('-pS', "--portscanning" ,help="Escaneo de puertos a una IP")
 parse.add_argument('-qR', '--qsreplace', help="Remplaza valores de querys de una lista de URLs.")
 parse.add_argument("-ip", help="Extraer ip de un dominio")
 parse.add_argument("--clickjacking", help="Genera un HTML que verifica si la web es vulnerable a clickjacking mediante un iframe", action="store_true")
+parse.add_argument("--hhi", help="Escanear una URL o lista de URLs en busca de una inyección de el header Host.", action="store_true")
 
 args = parse.parse_args()
 
@@ -62,9 +63,10 @@ if args.extrack_js:
 if args.jsensitive:
     from scripts.jsensitive import main as jsensitive
     asyncio.run(jsensitive(args.jsensitive))
-#if args.pathTraversal:
-#    from scripts.directory_traversal import main as pathtraversal
-#    asyncio.run(pathtraversal(args.pathTraversal))
+if args.pathTraversal:
+    from scripts.directory_traversal import main as pathtraversal
+    wordlist = input("[$] Wordlist Path Traversal: ")
+    asyncio.run(pathtraversal(args.pathTraversal, wordlist))
 if args.api:
     from scripts.api_endpoints import main as fuzzing_api
     asyncio.run(fuzzing_api(args.api))
@@ -100,3 +102,6 @@ if args.ip:
 if args.clickjacking:
     from scripts.clickjacking import generateClickjacking
     generateClickjacking()
+if args.hhi:
+    from scripts.hhi import main as hhi_scan
+    asyncio.run(hhi_scan())
