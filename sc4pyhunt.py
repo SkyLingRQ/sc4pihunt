@@ -1,8 +1,11 @@
 import argparse
 import asyncio
 import os
+import requests
+import json
 import socket
 from colorama import Fore, init
+from time import sleep
 
 init()
 
@@ -33,6 +36,30 @@ parse.add_argument("--admin-panel", help="Hace un alasisis mediante endpoints pa
 
 args = parse.parse_args()
 
+
+##### CHECK VERSION OF SCRIPT #####
+
+    ### GET VERSION LATEST
+
+url = "https://raw.githubusercontent.com/SkyLingRQ/sc4pihunt/main/others/version/version.json"
+
+version_data = requests.get(url)
+version = version_data.json()["latest_version"]
+
+    ### GET VERSION OF ACTUAL SC4PIHUNT
+
+with open("others/version/version.json", 'r') as random:
+    load_json = json.load(random)
+
+if load_json["latest_version"] != version:
+    print(f"{red}[!] Sc4pihunt is outdated. Update for more features!!{reset}")
+    sleep(1)
+    
+else:
+    pass
+
+
+##### END OF THE CHECK #####
 
 if args.status:
     from scripts.status_probe import main as httprobe
