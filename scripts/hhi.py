@@ -3,8 +3,6 @@ import aiohttp
 import random
 from scripts.useragent.user_agent import _useragent_list
 from colorama import init, Fore
-from tqdm.asyncio import tqdm_asyncio as tqdm
-
 init(autoreset=True)
 
 r = Fore.RED
@@ -43,6 +41,11 @@ listHeaders = [
 sem = asyncio.Semaphore(100)
 
 async def scan_hhi(url, session):
+    try:
+        async with session.get(url) as response_original:
+            content_original = await response_original.text()
+    except Exception:
+        pass
     for header in listHeaders:
         headers = {
                     header:"evil.com",
@@ -55,23 +58,24 @@ async def scan_hhi(url, session):
                     headersResponse = response.headers
                     htmlResponse = await response.text()
                     if response.status in [200, 301, 302, 307, 308]:
-                        if "evil.com" in htmlResponse or "evil.com" in str(headersResponse):
-                            banner2 = f"""{c}
-    {g}╔════════════════════════════════════╗
-    ║  {r}Host Header Injection Detected{g}    ║
-    ╚════════════════════════════════════╝
-    ┌──[{g}Target URL{c}─────────────────────────────────┐
-    {url}
-    │──[{g}Header Vulnerable]{c}──────────────────────────┐
-    {header}
-    │──[{g}Response Details]{c}───────────────────────────┐
-    {response.status}
-                        """
-                            print(banner2)
+                        if content_original != htmlResponse:
+                            if "evil.com" in htmlResponse or "evil.com" in str(headersResponse):
+                                banner2 = f"""{c}
+        {g}╔════════════════════════════════════╗
+        ║  {r}Host Header Injection Detected{g}    ║
+        ╚════════════════════════════════════╝
+        ┌──[{g}Target URL{c}─────────────────────────────────┐
+        {url}
+        │──[{g}Header Vulnerable]{c}──────────────────────────┐
+        {header}
+        │──[{g}Response Details]{c}───────────────────────────┐
+        {response.status}
+                            """
+                                print(banner2)
+                            else:
+                                pass
                         else:
                             pass
-                    else:
-                        pass
         except Exception:
             pass
 async def main():
