@@ -33,6 +33,7 @@ parse.add_argument("-ip", help="Extraer ip de un dominio")
 parse.add_argument("--clickjacking", help="Genera un HTML que verifica si la web es vulnerable a clickjacking mediante un iframe", action="store_true")
 parse.add_argument("--hhi", help="Escanear una URL o lista de URLs en busca de una inyección de el header Host.", action="store_true")
 parse.add_argument("--admin-panel", help="Hace un alasisis mediante endpoints para el reconocimiento de rutas de admin panel en una lista de webs o una única URL", action="store_true")
+parse.add_argument("-alienvault", help="Consultar dominio en AlienVault", action="store_true")
 
 args = parse.parse_args()
 
@@ -136,3 +137,6 @@ if args.hhi:
 if args.admin_panel:
     from scripts.adminFinder import main as adminFinder
     asyncio.run(adminFinder())
+if args.alienvault:
+    from scripts.alienvault import main as alienvault
+    alienvault()
