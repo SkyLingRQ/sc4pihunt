@@ -34,6 +34,7 @@ parse.add_argument("--clickjacking", help="Genera un HTML que verifica si la web
 parse.add_argument("--hhi", help="Escanear una URL o lista de URLs en busca de una inyección de el header Host.", action="store_true")
 parse.add_argument("--admin-panel", help="Hace un alasisis mediante endpoints para el reconocimiento de rutas de admin panel en una lista de webs o una única URL", action="store_true")
 parse.add_argument("-alienvault", help="Consultar dominio en AlienVault", action="store_true")
+parse.add_argument("-crt", help="Buscar subdominios mediante el servicio de crt.sh")
 
 args = parse.parse_args()
 
@@ -140,3 +141,6 @@ if args.admin_panel:
 if args.alienvault:
     from scripts.alienvault import main as alienvault
     alienvault()
+if args.crt:
+    from scripts.crt import main as crt
+    crt(args.crt)
