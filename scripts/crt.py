@@ -12,7 +12,7 @@ def main(domain):
     try:
         if not domain.startswith(("https://", "http://")):
             url = f"https://crt.sh/?q={domain}&output=json"
-            response = requests.get(url, timeout=15)
+            response = requests.get(url, timeout=(15, 120))
             data = response.json()
             if data:
                 for subdomain in data:
@@ -24,7 +24,7 @@ def main(domain):
             domainParse = urlparse(domain)
             domain = domainParse.netloc
             url = f"https://crt.sh/?q={domain}&output=json"
-            response = requests.get(url)
+            response = requests.get(url, timeout=(15, 120))
             data = response.json()
             if data:
                 for subdomain in data:
@@ -35,6 +35,6 @@ def main(domain):
     except Exception as e:
         print(f"{red}[!] Has been a error: {e}")
         exit()
-    with open("../crt_subdomains.txt", 'a') as file:
+    with open("crt_subdomains.txt", 'a') as file:
         for subdomain in subdomains:
             file.write(subdomain+"\n")
