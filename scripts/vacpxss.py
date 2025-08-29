@@ -42,7 +42,7 @@ async def fetch(session, url, payload):
             async with session.get(full_url, headers=headers, timeout=10) as response:
                 text = await response.text()
                 if payload in text:
-                    print(f"{rd}[XSS FOUND] {full_url}{reset}")
+                    print(f"{rd}[POSSIBLE XSS FOUND] {full_url}{reset}")
                     found_urls.append(full_url)
         except Exception:
             pass

@@ -35,6 +35,7 @@ parse.add_argument("--hhi", help="Escanear una URL o lista de URLs en busca de u
 parse.add_argument("--admin-panel", help="Hace un alasisis mediante endpoints para el reconocimiento de rutas de admin panel en una lista de webs o una única URL", action="store_true")
 parse.add_argument("-alienvault", help="Consultar dominio en AlienVault", action="store_true")
 parse.add_argument("-crt", help="Buscar subdominios mediante el servicio de crt.sh")
+parse.add_argument("--ssti", help="Escanear una lista de URLs en busca de vulnerabilidad Server-Side Template Injection (SSTI)")
 
 args = parse.parse_args()
 
@@ -144,3 +145,6 @@ if args.alienvault:
 if args.crt:
     from scripts.crt import main as crt
     crt(args.crt)
+if args.ssti:
+    from scripts.ssti_reflected import main as ssti_scan
+    asyncio.run(ssti_scan(args.ssti))
