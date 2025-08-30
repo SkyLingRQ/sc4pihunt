@@ -26,7 +26,7 @@ parse.add_argument("-wu", "--wayback-url", help="Recupera URLs archivadas para u
 parse.add_argument("-WU", "--wayback-urls", action="store_true", help="Recupera y lista múltiples URLs archivadas de Wayback Machine.")
 parse.add_argument("-ej", "--extrack-js", help="Extrae archivos JavaScript desde la URL proporcionada.")
 parse.add_argument("-jS", "--jsensitive", help="Escanea archivos JavaScript en busca de datos sensibles (tokens, claves, etc).")
-#parse.add_argument("-pT", "--pathTraversal", help="Detecta posibles fallos de path traversal en parametros mediante una lista de payloads proporcionada por el usuario.")
+parse.add_argument("-pT", "--pathTraversal", help="Detecta posibles fallos de path traversal en parametros mediante una lista de payloads proporcionada por el usuario.", default=None, nargs="?")
 parse.add_argument('-pS', "--portscanning" ,help="Escaneo de puertos a una IP")
 parse.add_argument('-qR', '--qsreplace', help="Remplaza valores de querys de una lista de URLs.")
 parse.add_argument("-ip", help="Extraer ip de un dominio")
@@ -36,7 +36,7 @@ parse.add_argument("--admin-panel", help="Hace un alasisis mediante endpoints pa
 parse.add_argument("-alienvault", help="Consultar dominio en AlienVault", action="store_true")
 parse.add_argument("-crt", help="Buscar subdominios mediante el servicio de crt.sh")
 parse.add_argument("--ssti", help="Escanear una lista de URLs en busca de vulnerabilidad Server-Side Template Injection (SSTI)")
-
+parse.add_argument("-f", "--file", help="Archivo con URLs para automatizar.", default=None)
 args = parse.parse_args()
 
 
@@ -94,10 +94,6 @@ if args.extrack_js:
 if args.jsensitive:
     from scripts.jsensitive import main as jsensitive
     asyncio.run(jsensitive(args.jsensitive))
-#if args.pathTraversal:
-#    from scripts.directory_traversal import main as pathtraversal
-#    wordlist = input("[$] Wordlist Path Traversal: ")
-#    asyncio.run(pathtraversal(args.pathTraversal, wordlist))
 if args.api:
     from scripts.api_endpoints import main as fuzzing_api
     asyncio.run(fuzzing_api(args.api))
@@ -148,3 +144,8 @@ if args.crt:
 if args.ssti:
     from scripts.ssti_reflected import main as ssti_scan
     asyncio.run(ssti_scan(args.ssti))
+if args.pathTraversal is not None or args.file:
+    from scripts.directory_traversal import main as lfi
+    url_to_scan = args.pathTraversal if args.pathTraversal else None
+    file_to_scan = args.file if args.file else None
+    asyncio.run(lfi(url=url_to_scan, file=file_to_scan))

