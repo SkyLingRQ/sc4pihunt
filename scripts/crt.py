@@ -37,4 +37,5 @@ def main(domain):
         exit()
     with open("crt_subdomains.txt", 'a') as file:
         for subdomain in subdomains:
-            file.write(subdomain+"\n")
+            if subdomain:
+                file.write(subdomain+"\n")

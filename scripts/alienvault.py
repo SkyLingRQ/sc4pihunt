@@ -35,7 +35,7 @@ def main():
 
         save = input("You wanna save the content? yes/no: ")
         if save.lower() == "yes":
-            with open(f"../{dominio}{page}.txt", 'w') as file:
+            with open(f"{dominio}{page}.txt", 'w') as file:
                 file.write(response.text)
             print("")
         elif save.lower() == "no":
