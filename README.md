@@ -10,7 +10,7 @@ Sc4pyhunt is a tool build in python for recon web. 🕸️
 ```bash
 git clone https://github.com/SkyLingRQ/sc4pihunt
 cd sc4pyhunt
-chmod +x sc4pyhunt install.sh
+chmod +x sc4pyhunt.py install.sh
 sudo ./install.sh
 pip install -r requirements.txt
 ```
