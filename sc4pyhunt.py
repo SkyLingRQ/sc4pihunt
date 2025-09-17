@@ -36,6 +36,7 @@ parse.add_argument("--admin-panel", help="Hace un alasisis mediante endpoints pa
 parse.add_argument("-alienvault", help="Consultar dominio en AlienVault", action="store_true")
 parse.add_argument("-crt", help="Buscar subdominios mediante el servicio de crt.sh")
 parse.add_argument("--ssti", help="Escanear una lista de URLs en busca de vulnerabilidad Server-Side Template Injection (SSTI)")
+parse.add_argument("-sql", "--sqlinjection", help="Escanear respuestas de URLs con payloads de SQLInjection en busca de indicios vulnerables.")
 parse.add_argument("-f", "--file", help="Archivo con URLs para automatizar.", default=None)
 args = parse.parse_args()
 
@@ -149,3 +150,6 @@ if args.pathTraversal is not None or args.file:
     url_to_scan = args.pathTraversal if args.pathTraversal else None
     file_to_scan = args.file if args.file else None
     asyncio.run(lfi(url=url_to_scan, file=file_to_scan))
+if args.sqlinjection:
+    from scripts.sqli import main as sqlinjection
+    asyncio.run(sqlinjection(args.sqlinjection))

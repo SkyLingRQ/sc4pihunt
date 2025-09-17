@@ -59,6 +59,8 @@ options:
   -alienvault           Consultar dominio en AlienVault
   -crt CRT              Buscar subdominios mediante el servicio de crt.sh
   --ssti SSTI           Escanear una lista de URLs en busca de vulnerabilidad Server-Side Template Injection (SSTI)
+  -sql SQLINJECTION, --sqlinjection SQLINJECTION
+                        Escanear respuestas de URLs con payloads de SQLInjection en busca de indicios vulnerables.
   -f FILE, --file FILE  Archivo con URLs para automatizar.
 
 ```
