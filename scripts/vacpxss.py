@@ -21,6 +21,8 @@ payloads = [
 
 found_urls = []
 sem = asyncio.Semaphore(50)
+VALID_STATUS = {200, 201, 202, 301, 302, 307, 308, 400, 401, 403, 422}
+
 
 async def fetch(session, url, payload):
     random_agent = random.choice(_useragent_list)
@@ -41,9 +43,11 @@ async def fetch(session, url, payload):
         try:
             async with session.get(full_url, headers=headers, timeout=10) as response:
                 text = await response.text()
-                if payload in text:
-                    print(f"{rd}[POSSIBLE XSS FOUND] {full_url}{reset}")
-                    found_urls.append(full_url)
+                status = response.status
+                if status in VALID_STATUS:
+                    if payload in text:
+                        print(f"{rd}[POSSIBLE XSS FOUND] {full_url}{reset}")
+                        found_urls.append(full_url)
         except Exception:
             pass
 

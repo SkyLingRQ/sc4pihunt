@@ -47,21 +47,23 @@ args = parse.parse_args()
 
 url = "https://raw.githubusercontent.com/SkyLingRQ/sc4pihunt/main/others/version/version.json"
 
-version_data = requests.get(url)
-version = version_data.json()["latest_version"]
+try:
+    version_data = requests.get(url)
+    version = version_data.json()["latest_version"]
 
     ### GET VERSION OF ACTUAL SC4PIHUNT
 
-with open("others/version/version.json", 'r') as random:
-    load_json = json.load(random)
+    with open("others/version/version.json", 'r') as random:
+        load_json = json.load(random)
 
-if load_json["latest_version"] != version:
-    print(f"{red}[!] Sc4pihunt is outdated. Update for more features!!{reset}")
-    sleep(1)
-    
-else:
+    if load_json["latest_version"] != version:
+        print(f"{red}[!] Sc4pihunt is outdated. Update for more features!!{reset}")
+        sleep(1)
+        
+    else:
+        pass
+except json.JSONDecodeError:
     pass
-
 
 ##### END OF THE CHECK #####
 

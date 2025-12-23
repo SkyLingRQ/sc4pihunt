@@ -9,21 +9,27 @@ init()
 green = Fore.GREEN
 reset = Fore.RESET
 
-urlPayload = "https://www.google.com"
+payloads = [
+    "https://google.com",
+    "//google.com",
+    "///google.com",
+    "%2F%2Fgoogle.com",
+    "https:%2F%2Fgoogle.com"
+]
+REDIRECT_STATUS = {301, 302, 303, 307, 308}
 
 async def redirectx(url, session):
     random_useragent = random.choice(_useragent_list)
     header = {"User-Agent":random_useragent}
     try:
-        async with session.get(url, headers=header, allow_redirects=True) as response2:
-            response2 = str(response2.url)
-            if response2.startswith(urlPayload):
-                print(f"{green}[ VULNERABLLE ] {url}{reset}")
-            else:
-                pass
+        async with session.get(url, headers=header, allow_redirects=False) as response2:
+            status = response2.status
+            if status in REDIRECT_STATUS:
+                location = response2.headers.get("Location")
+                if "google.com" in location:
+                    print(f"{green}[ VULNERABLLE ] {url}{reset}")
     except Exception:
         pass
-
 async def main(file):
     task = []
     with open(file, 'r') as rf:
@@ -34,8 +40,9 @@ async def main(file):
                 urlp = urlparse(url)
                 query = parse_qs(urlp.query)
                 for key in query:
-                    query[key] = [urlPayload]
-                    new_query = urlencode(query, doseq=True)
-                    new_url = urlunparse(urlp._replace(query=new_query))
-                    task.append(redirectx(new_url, session))
+                    for payload in payloads:
+                        query[key] = [payload]
+                        new_query = urlencode(query, doseq=True)
+                        new_url = urlunparse(urlp._replace(query=new_query))
+                        task.append(redirectx(new_url, session))
         await asyncio.gather(*task)
