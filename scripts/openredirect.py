@@ -11,23 +11,21 @@ reset = Fore.RESET
 
 payloads = [
     "https://google.com",
+    "/google.com/%2f.",
     "//google.com",
     "///google.com",
     "%2F%2Fgoogle.com",
     "https:%2F%2Fgoogle.com"
 ]
-REDIRECT_STATUS = {301, 302, 303, 307, 308}
 
 async def redirectx(url, session):
     random_useragent = random.choice(_useragent_list)
     header = {"User-Agent":random_useragent}
     try:
-        async with session.get(url, headers=header, allow_redirects=False) as response2:
-            status = response2.status
-            if status in REDIRECT_STATUS:
-                location = response2.headers.get("Location")
-                if "google.com" in location:
-                    print(f"{green}[ VULNERABLLE ] {url}{reset}")
+        async with session.get(url, headers=header, allow_redirects=True) as response2:
+            urlfinalParsed = urlparse(str(response2.url))
+            if urlfinalParsed.netloc == "www.google.com":
+                print(f"{green}[ VULNERABLLE ] {url}{reset}")
     except Exception:
         pass
 async def main(file):
