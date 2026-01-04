@@ -38,6 +38,8 @@ parse.add_argument("-crt", help="Buscar subdominios mediante el servicio de crt.
 parse.add_argument("--ssti", help="Escanear una lista de URLs en busca de vulnerabilidad Server-Side Template Injection (SSTI)")
 parse.add_argument("-sql", "--sqlinjection", help="Escanear respuestas de URLs con payloads de SQLInjection en busca de indicios vulnerables.")
 parse.add_argument("-f", "--file", help="Archivo con URLs para automatizar.", default=None)
+parse.add_argument("-crlf", "--crlf-injection", help="Escanear una lista de URLs en busca de inyecciones CRLF.")
+
 args = parse.parse_args()
 
 
@@ -155,3 +157,6 @@ if args.pathTraversal is not None or args.file:
 if args.sqlinjection:
     from scripts.sqli import main as sqlinjection
     asyncio.run(sqlinjection(args.sqlinjection))
+if args.crlf_injection:
+    from scripts.crlf_injection import main as crlf_injection
+    asyncio.run(crlf_injection(args.crlf_injection))
