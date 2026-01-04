@@ -17,10 +17,10 @@ pip install -r requirements.txt
 
 # USAGE
 ```bash
-usage: sc4pyhunt.py [-h] [-sP STATUS] [-cx CORS] [-op REDIRECT] [--xss XSS] [-api API] [-S SUBDOMAINS]
-                    [-wu WAYBACK_URL] [-WU] [-ej EXTRACK_JS] [-jS JSENSITIVE] [-pT [PATHTRAVERSAL]]
-                    [-pS PORTSCANNING] [-qR QSREPLACE] [-ip IP] [--clickjacking] [--hhi] [--admin-panel]
-                    [-alienvault] [-crt CRT] [--ssti SSTI] [-f FILE]
+usage: sc4pyhunt.py [-h] [-sP STATUS] [-cx CORS] [-op REDIRECT] [--xss XSS] [-api API] [-S SUBDOMAINS] [-wu WAYBACK_URL] [-WU]
+                    [-ej EXTRACK_JS] [-jS JSENSITIVE] [-pT [PATHTRAVERSAL]] [-pS PORTSCANNING] [-qR QSREPLACE] [-ip IP]
+                    [--clickjacking] [--hhi] [--admin-panel] [-alienvault] [-crt CRT] [--ssti SSTI] [-sql SQLINJECTION] [-f FILE]
+                    [-crlf CRLF_INJECTION]
 
 Sc4pihunt is a tool build in python for recon web.
 
@@ -45,8 +45,8 @@ options:
   -jS JSENSITIVE, --jsensitive JSENSITIVE
                         Escanea archivos JavaScript en busca de datos sensibles (tokens, claves, etc).
   -pT [PATHTRAVERSAL], --pathTraversal [PATHTRAVERSAL]
-                        Detecta posibles fallos de path traversal en parametros mediante una lista de payloads
-                        proporcionada por el usuario.
+                        Detecta posibles fallos de path traversal en parametros mediante una lista de payloads proporcionada por el
+                        usuario.
   -pS PORTSCANNING, --portscanning PORTSCANNING
                         Escaneo de puertos a una IP
   -qR QSREPLACE, --qsreplace QSREPLACE
@@ -54,15 +54,16 @@ options:
   -ip IP                Extraer ip de un dominio
   --clickjacking        Genera un HTML que verifica si la web es vulnerable a clickjacking mediante un iframe
   --hhi                 Escanear una URL o lista de URLs en busca de una inyección de el header Host.
-  --admin-panel         Hace un alasisis mediante endpoints para el reconocimiento de rutas de admin panel en una
-                        lista de webs o una única URL
+  --admin-panel         Hace un alasisis mediante endpoints para el reconocimiento de rutas de admin panel en una lista de webs o una
+                        única URL
   -alienvault           Consultar dominio en AlienVault
   -crt CRT              Buscar subdominios mediante el servicio de crt.sh
   --ssti SSTI           Escanear una lista de URLs en busca de vulnerabilidad Server-Side Template Injection (SSTI)
   -sql SQLINJECTION, --sqlinjection SQLINJECTION
                         Escanear respuestas de URLs con payloads de SQLInjection en busca de indicios vulnerables.
   -f FILE, --file FILE  Archivo con URLs para automatizar.
-
+  -crlf CRLF_INJECTION, --crlf-injection CRLF_INJECTION
+                        Escanear una lista de URLs en busca de inyecciones CRLF.
 ```
 
 
