@@ -57,7 +57,14 @@ async def fetch(session, url, payload):
                 status = response.status
                 if status in VALID_STATUS:
                     if payload in text:
-                        print(f"{rd}[POSSIBLE XSS FOUND] {full_url}{reset}")
+                        print("\033[31m┌──────────────────────────────────────────────┐")
+                        print("│ 🚨  POSSIBLE XSS VULNERABILITY DETECTED      │")
+                        print("└──────────────────────────────────────────────┘\033[0m")
+                        print("\033[93m[✦] Type    : \033[97mReflected XSS\n")
+                        print(f"\033[93m[✦] URL     : \033[96m%s{full_url}\n")
+                        print(f"\033[93m[✦] Payload : \033[95m%s{payload}\n")
+                        print("\033[92m[✔] Payload successfully reflected")
+                        print("\033[90m[ℹ] Manual verification recommended\033[0m\n")
                         found_urls.append(full_url)
         except Exception:
             pass
