@@ -10,6 +10,9 @@ green = Fore.GREEN
 reset = Fore.RESET
 
 payloads = [
+    "www.google.com",
+    "evil.com",
+    "http://evil.com",
 	"https://google.com",
 	"/google.com/%2f.",
 	"//google.com",
