@@ -69,7 +69,6 @@ keywords = [
     ":/usr/sbin",
 ]
 
-
 sem = asyncio.Semaphore(50)
 async def scan_lfi(url,session):
     user_agent = random.choice(_useragent_list)
